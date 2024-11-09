@@ -12,12 +12,9 @@ interface Repository {
 export default function AuthButton() {
   const { data: session } = useSession()
   const [repos, setRepos] = useState<Repository[]>([])
-
+  const [filteredRepos, setFilteredRepos] = useState<Repository[]>([])
   useEffect(() => {
-    console.log('session', session)
-    console.log('access token', session?.access_token)
     const fetchRepos = async () => {
-        console.log('fetching repos')
       if (session?.access_token) {
         const response = await fetch('https://api.github.com/user/repos', {
           headers: {
@@ -25,12 +22,12 @@ export default function AuthButton() {
           },
         })
         const data = await response.json()
-        console.log('repos', data)
         setRepos(data)
       }
     }
-
-    fetchRepos().catch(console.error)
+    if (repos.length === 0) {
+      fetchRepos().catch(console.error)
+    }
   }, [session])
 
   if (session) {
@@ -46,20 +43,33 @@ export default function AuthButton() {
         
         <div className="mt-4">
           <h2>Your Repositories:</h2>
-          <ul className="list-disc pl-5">
-            {repos.map((repo) => (
-              <li key={repo.id}>
-                <a 
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search repositories..."
+              className="w-full p-2 border rounded mb-2"
+              onChange={(e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredRepos = repos.filter(repo =>
+                  repo.name.toLowerCase().includes(searchTerm)
+                );
+                setFilteredRepos(filteredRepos);
+              }}
+            />
+            <div className="max-h-60 overflow-y-auto border rounded">
+              {(filteredRepos || repos).map((repo) => (
+                <a
+                  key={repo.id}
                   href={repo.html_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
+                  className="block p-2 hover:bg-gray-100 text-blue-500 hover:underline"
                 >
                   {repo.name}
                 </a>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     )
