@@ -90,7 +90,7 @@ export default function Navbar() {
     )
   }
   return (
-    <div className="flex justify-end">
+    <div className="flex justify-end gap-4 items-center">
       <button onClick={() => signIn('github')}>Sign in with GitHub</button>
       <ThemeManager />
     </div>

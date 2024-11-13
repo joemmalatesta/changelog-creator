@@ -29,7 +29,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased px-32 mx-auto my-10`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased px-32 mx-auto my-10 dark:bg-dark bg-light`}
         >
         <Providers>
             <Navbar/>
