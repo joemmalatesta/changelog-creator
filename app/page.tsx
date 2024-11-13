@@ -1,9 +1,9 @@
-import AuthButton from "@/app/components/AuthButton";
+import AuthButton from "@/app/components/AuthButton"; 
 
-export default function Home() {
-  return (
-    <div>
-      <AuthButton />
-    </div>
-  );
+export default async function Home() {
+	return (
+		<div>
+			<AuthButton />
+		</div>
+	);
 }
