@@ -1,9 +1,9 @@
-import AuthButton from "@/app/components/AuthButton"; 
-
+import Navbar from "@/app/components/Navbar";
 export default async function Home() {
 	return (
-		<div>
-			<AuthButton />
-		</div>
+		<main>
+			{/* Repos and stuff on the right */}
+			{/* Changelog on the left. */}
+		</main>
 	);
 }
