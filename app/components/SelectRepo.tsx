@@ -2,7 +2,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Commit, PullRequest, Repository } from "@/types/repo";
-import SelectRepoButton from "./SelectRepoButton";
+import SelectRepoButton from "./SelectRepoClient";
 
 
 

@@ -1,5 +1,5 @@
 import Navbar from "@/app/components/Navbar";
-import RepoSelector from "./components/RepoSelector";
+import RepoSelector from "./components/SelectRepo";
 import ChangelogViewer from "./components/ChangelogViewer";
 export default async function Home() {
 	return (
