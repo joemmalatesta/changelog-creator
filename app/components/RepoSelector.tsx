@@ -25,12 +25,12 @@ export default async function RepositorySelector() {
         const session = await getServerSession(authOptions);
         if (!session?.access_token) return { pullRequests: [], commits: [] };
 
-        const pullRequests: PullRequest[] = await fetch(`https://api.github.com/repos/${repo.full_name}/pulls?state=all`, {
+        const pullRequests: PullRequest[] = await fetch(`https://api.github.com/repos/${repo.full_name}/pulls?state=all&per_page=100`, {
             headers: {
                 Authorization: `Bearer ${session.access_token}`,
             },
         }).then(res => res.json());
-        const commits: Commit[] = await fetch(`https://api.github.com/repos/${repo.full_name}/commits`, {
+        const commits: Commit[] = await fetch(`https://api.github.com/repos/${repo.full_name}/commits?per_page=100`, {
             headers: {
                 Authorization: `Bearer ${session.access_token}`,
             },
