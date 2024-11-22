@@ -1,11 +1,17 @@
 import Navbar from "@/app/components/Navbar";
-import RepositorySelector from "./components/RepoSelector/server";
+import RepoSelector from "./components/RepoSelector";
+import ChangelogViewer from "./components/ChangelogViewer";
 export default async function Home() {
 	return (
 		<main>
-			<RepositorySelector />
-			{/* Repos and stuff on the right */}
-			{/* Changelog on the left. */}
+			<div className="flex justify-between gap-10">
+				<div className="w-1/3">
+					<RepoSelector />
+				</div>
+				<div className="w-2/3">
+					<ChangelogViewer />
+				</div>
+			</div>
 		</main>
 	);
 }

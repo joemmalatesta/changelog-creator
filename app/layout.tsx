@@ -23,16 +23,18 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={`${geistSans.variable} ${geistMono.variable} antialiased px-32 mx-auto my-10 dark:bg-dark bg-light`}>
+			<body className={`${geistSans.variable} ${geistMono.variable} antialiased px-32 mx-auto dark:bg-dark bg-light min-h-screen flex flex-col`}>
 				<Providers>
 					<Navbar />
-					<main className="min-h-screen">{children}</main>
-					<p className={`p-3 text-center text-sm`}>
-						Created by{" "}
-						<a href="https://joemmalatesta.com" className=" underline underline-offset-2 hover:underline-offset-4 transition-all">
-							Joe Malatesta
-						</a>
-					</p>
+					<main className="flex-1 mt-4">{children}</main>
+					<footer>
+						<p className={`p-3 text-center text-sm`}>
+							Created by{" "}
+							<a href="https://joemmalatesta.com" className="underline underline-offset-2 hover:underline-offset-4 transition-all">
+								Joe Malatesta
+							</a>
+						</p>
+					</footer>
 				</Providers>
 			</body>
 		</html>
