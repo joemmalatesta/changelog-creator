@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.0.4",
     "@neondatabase/serverless": "^0.10.3",
     "ai": "^4.0.3",
     "dotenv": "^16.4.5",
@@ -17,7 +18,8 @@
     "next-auth": "^4.24.10",
     "next-themes": "^0.4.3",
     "react": "19.0.0-rc-02c0e824-20241028",
-    "react-dom": "19.0.0-rc-02c0e824-20241028"
+    "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.15",
