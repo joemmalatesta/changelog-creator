@@ -6,44 +6,6 @@ export interface Repository {
     updated_at: string;
 }
 
-export interface RepoData {
-	pullRequests: PullRequest[];
-	commits: Commit[];
-}
-
-export interface PullRequest {
-    id: number;
-    number: number;
-    state: 'open' | 'closed';
-    title: string;
-    body: string | null;
-    created_at: string;
-    updated_at: string;
-    closed_at: string | null;
-    merged_at: string | null;
-    user: {
-        login: string;
-        id: number;
-        avatar_url: string;
-    };
-    head: {
-        ref: string;
-        sha: string;
-    };
-    base: {
-        ref: string;
-        sha: string;
-    };
-    draft: boolean;
-    merged: boolean;
-    mergeable: boolean | null;
-    comments: number;
-    commits: number;
-    additions: number;
-    deletions: number;
-    changed_files: number;
-}
-
 export interface Commit {
     sha: string;           // The commit ID/hash
     commit: {
