@@ -49,7 +49,7 @@ export default function ChangelogViewer({ commits }: { commits: Commit[] }) {
 		for (const commit of commits) {
 			getChangelogEntry(commit);
 		}
-	}, [commits, setMessages]);
+	}, [commits]);
 
 	return (
 		<div className="flex flex-col w-full max-w-md pb-10 pt-3 mx-auto stretch">

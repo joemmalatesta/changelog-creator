@@ -93,7 +93,7 @@ export default async function Home() {
 					<form action={publishChangelog}>
 						<button type="submit">Publish</button>
 					</form>
-					<ChangelogViewer commits={commitsForChangelog} />
+					{/* <ChangelogViewer commits={commitsForChangelog} /> */}
 				</div>
 			)}
 		</main>
