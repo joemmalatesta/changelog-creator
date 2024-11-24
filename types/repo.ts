@@ -6,6 +6,11 @@ export interface Repository {
     updated_at: string;
 }
 
+export interface RepoData {
+	pullRequests: PullRequest[];
+	commits: Commit[];
+}
+
 export interface PullRequest {
     id: number;
     number: number;

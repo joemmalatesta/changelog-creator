@@ -1,52 +1,39 @@
-"use server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Commit, PullRequest, Repository } from "@/types/repo";
-import SelectRepoButton from "./SelectRepoClient";
+"use client";
+import { Repository } from "@/types/repo";
+
+export default function SelectRepoButton({ repos, formAction }: { repos: Repository[]; formAction: (formData: FormData) => Promise<void> }) {
+	async function handleSubmit(formData: FormData) {
+		await formAction(formData);
+	}
 
 
-
-export default async function RepositorySelector() {
-    const session = await getServerSession(authOptions);
-    let repos: Repository[] = [];
-    
-    // on pageload
-    if (session?.access_token) {
-        repos = await fetch("https://api.github.com/user/repos?sort=updated&direction=desc", {
-            headers: {
-                Authorization: `Bearer ${session.access_token}`,
-            },
-        }).then(res => res.json());
-    }
-
-
-    async function getRepoInformation(repo: Repository) {   
-        "use server";
-        const session = await getServerSession(authOptions);
-        if (!session?.access_token) return { pullRequests: [], commits: [] };
-
-        const pullRequests: PullRequest[] = await fetch(`https://api.github.com/repos/${repo.full_name}/pulls?state=all&per_page=100`, {
-            headers: {
-                Authorization: `Bearer ${session.access_token}`,
-            },
-        }).then(res => res.json());
-        const commits: Commit[] = await fetch(`https://api.github.com/repos/${repo.full_name}/commits?per_page=100`, {
-            headers: {
-                Authorization: `Bearer ${session.access_token}`,
-            },
-        }).then(res => res.json());
-        return {pullRequests, commits};
-    }
-
-    async function handleFormSubmit(formData: FormData) {
-        "use server";
-        const repoData = JSON.parse(formData.get('repo') as string) as Repository;
-        return getRepoInformation(repoData);
-    }
-
-
-    // Pass both repos and the form action to the client component
-    return (
-		<SelectRepoButton repos={repos} formAction={handleFormSubmit} />
+	return (
+		<main>
+			<div>
+				<input
+					className="w-full p-2 rounded-md bg-neutral-200 dark:bg-neutral-700 placeholder:text-dark/50 dark:placeholder:text-light/50"
+					type="text"
+					placeholder="Filter repositories..."
+					onChange={(e) => {
+						const filter = e.target.value.toLowerCase();
+						const buttons = e.target.parentElement?.querySelectorAll("button");
+						buttons?.forEach((button) => {
+							const text = button.textContent?.toLowerCase() || "";
+							button.style.display = text.includes(filter) ? "" : "none";
+						});
+					}}
+				/>
+				<div className="flex flex-col max-h-60 overflow-y-auto items-start">
+					{repos.map((repo) => (
+						<form key={repo.id} action={handleSubmit} className="w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-md ">
+							<input type="hidden" name="repo" value={JSON.stringify(repo)} />
+							<button type="submit" className="w-full text-start p-2">
+								{repo.name}
+							</button>
+						</form>
+					))}
+				</div>
+			</div>
+		</main>
 	);
 }
