@@ -3,7 +3,7 @@
 import { Commit } from "@/types/repo";
 import { useEffect, useState } from "react";
 
-export default function SelectRange({ commits, formAction }: { commits: Commit[]; formAction: (formData: FormData) => Promise<void> }) {
+export default function SelectRange({ commits, formAction }: { commits: Commit[]; formAction: (formData: FormData) => Promise<{ commits: Commit[]; title: string }> }) {
 	const [rangeStart, setRangeStart] = useState<Commit | null>(null);
 	const [rangeEnd, setRangeEnd] = useState<Commit | null>(null);
 	const [commitsBetween, setCommitsBetween] = useState<Commit[]>([]);
