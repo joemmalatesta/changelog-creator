@@ -1,7 +1,7 @@
 "use server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Commit, Repository } from "@/types/repo";
+import { authOptions } from "@/app/utils/authOptions";
+import { Repository } from "@/types/repo";
 import { redirect } from "next/navigation";
 import SelectRepoButton from "./components/SelectRepo";
 import { fetchUserRepos } from "../dataFetch/repository";

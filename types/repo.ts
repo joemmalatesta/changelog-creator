@@ -28,3 +28,13 @@ export interface Commit {
         status: string;    // Status of the file (added, modified, removed, etc.)
     }[];
 }
+
+export interface File {
+    filename: string;
+    additions: number;
+    deletions: number;
+    changes: number;
+    patch?: string;
+    status: string;
+}
+

@@ -18,13 +18,14 @@ export default function ClientCreatePage({ repoName, commits }: ClientCreatePage
 	const handleCreateChangelog = async (formData: FormData) => {
 		const result = await createChangelog(formData);
 		setCommitRange(result.commits);
+		console.log(result.title);
 		setChangelogTitle(result.title);
 		return result;
 	};
 
 	return (
-		<div className="flex gap-2">
-			<div className="flex flex-col gap-2 w-1/3">
+		<div className="flex gap-10">
+			<div className="flex flex-col gap-2 w-2/5">
 				<form action={resetRepo} className="flex gap-1 items-center mb-2">
 					<button type="submit">
 						<svg className="dark:hidden" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#1a1a1a" viewBox="0 0 256 256">
@@ -38,10 +39,9 @@ export default function ClientCreatePage({ repoName, commits }: ClientCreatePage
 				</form>
 				<SelectRange commits={commits} formAction={handleCreateChangelog} />
 			</div>
-			{commitRange.length > 0 && (
-				<div className="w-2/3">
-					<h2 className="text-2xl font-bold">{changelogTitle}</h2>
-					<ChangelogViewer commits={commitRange} repoName={repoName} />
+			{commitRange.length > 0 && changelogTitle && (
+				<div className="w-3/5">
+					<ChangelogViewer commits={commitRange} repoName={repoName} changelogTitle={changelogTitle} />
 				</div>
 			)}
 		</div>

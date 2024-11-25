@@ -1,7 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/utils/authOptions";
 import { Commit } from "@/types/repo";
 
 // Allow streaming responses up to 30 seconds
@@ -26,6 +26,8 @@ async function getDiffsFromCommit(repoName: string, commitId: string) {
 	if (!session?.access_token) {
 		throw new Error("Authentication required");
 	}
+	console.log("repoName", repoName);
+	console.log("commitId", commitId);
 
 	const response = await fetch(`https://api.github.com/repos/${repoName}/commits/${commitId}`, {
 		headers: {

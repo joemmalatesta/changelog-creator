@@ -47,59 +47,78 @@ export default function SelectRange({ commits, formAction }: { commits: Commit[]
 		return true;
 	}
 
+	// Add this new function to handle commit selection
+	const handleCommitClick = (commit: Commit) => {
+		if (!rangeStart) {
+			setRangeStart(commit);
+		} else if (!rangeEnd) {
+			// Determine correct order based on commit list
+			const clickedIndex = commits.findIndex((c) => c.sha === commit.sha);
+			const startIndex = commits.findIndex((c) => c.sha === rangeStart.sha);
+			
+			if (clickedIndex < startIndex) {
+				setRangeEnd(rangeStart);
+				setRangeStart(commit);
+			} else {
+				setRangeEnd(commit);
+			}
+		} else {
+			// Reset selection and start new range
+			setRangeStart(commit);
+			setRangeEnd(null);
+		}
+	};
+
 	return (
 		<div>
 			{commits.length > 0 ? (
-				<div>
-					<ul className="max-h-96 overflow-y-auto">
-						{commits.map((commit) => (
-							<li key={commit.sha} className="w-full flex items-center justify-between p-1">
-								<div className="flex items-center gap-2">
-									<div className="flex gap-2">
-										<button
-											onClick={() => setRangeStart(commit)}
-											className={`px-2 py-1 rounded ${rangeStart === commit ? "bg-blue-500 text-white" : "bg-neutral-200 dark:bg-neutral-700"}`}
-										>
-											Start
-										</button>
-										<button
-											onClick={() => setRangeEnd(commit)}
-											className={`px-2 py-1 rounded ${rangeEnd === commit ? "bg-blue-500 text-white" : "bg-neutral-200 dark:bg-neutral-700"}`}
-										>
-											End
-										</button>
+				<div className="flex gap-2 flex-col">
+					<form action={handleSubmit}>
+						<div className="flex flex-col items-start">
+							<label htmlFor="title" className="text-sm opacity-50 p-0.5">Changelog Title</label>
+							<input className="p-2 rounded w-full" required type="text" id="title" name="title" placeholder="Version 1.0.0" />
+						</div>
+						<ul className="max-h-96 overflow-y-auto">
+							<p className="text-sm opacity-50 p-0.5">Commits</p>
+							{commits.map((commit) => (
+								<li 
+									key={commit.sha} 
+									onClick={() => handleCommitClick(commit)}
+									className={`w-full flex items-center justify-between p-1 cursor-pointer ${
+										(commit === rangeStart || commit === rangeEnd) ? "dark:bg-emerald-600 bg-emerald-400 dark:text-light text-dark" : "hover:bg-neutral-200 dark:hover:bg-neutral-800"
+									} ${rangeStart && rangeEnd && commitsBetween.includes(commit) && (commit !== rangeStart || commit !== rangeEnd) ? "dark:bg-neutral-600/40 bg-neutral-300/30 dark:text-light text-dark" : ""}`}
+								>
+									<div className="flex items-center gap-2 w-11/12">
+										<p className="whitespace-nowrap overflow-hidden text-ellipsis">{commit.commit.message}</p>
 									</div>
-									<p className="w-11/12 whitespace-nowrap overflow-hidden text-ellipsis">{commit.commit.message}</p>
-								</div>
-								<p className="text-sm opacity-50">{calculateLastUpdated(new Date(commit.commit.author.date))}</p>
-							</li>
-						))}
-					</ul>
+									<p className="text-sm opacity-50">{calculateLastUpdated(new Date(commit.commit.author.date))}</p>
+								</li>
+							))}
+						</ul>
+
+						{!rangeStart && !rangeEnd && (
+							<p className="text-lg opacity-50 p-0.5">Select Starting Commit...</p>
+						)}
+						{rangeStart && !rangeEnd && (
+							<p className="text-lg opacity-50 p-0.5">Select Ending Commit...</p>
+						)}
+						{(rangeStart || rangeEnd) && (
+							<div className="relative p-1 rounded flex flex-col justify-between">
+								{commitsBetween !== null && <p className="text-light/60">{commitsBetween.length} commits selected</p>}
+							</div>
+						)}
+						{rangeValid() && (
+							<>
+								<input type="hidden" name="commits" value={JSON.stringify(commitsBetween)} />
+								<button type="submit" className="dark:bg-emerald-600/70 bg-emerald-400/70 w-full dark:text-light text-dark px-4 py-2 rounded">
+									Generate Changelog
+								</button>
+							</>
+						)}
+					</form>
 				</div>
 			) : (
 				<p className="opacity-50">No commits</p>
-			)}
-
-			{(rangeStart || rangeEnd) && (
-				<div className="relative mt-4 p-2 rounded h-32 flex flex-col justify-between">
-					<div className="absolute left-0 top-2 bottom-0 w-[2px] h-28 bg-neutral-300 dark:bg-neutral-600" />
-					{rangeStart && <p>{rangeStart.commit.message}</p>}
-					{commitsBetween !== null && <p className="text-sm text-neutral-500">{commitsBetween.length} commits selected</p>}
-					{rangeEnd && <p>{rangeEnd.commit.message}</p>}
-					{!rangeValid() && <p className="text-red-500 text-sm">Select a valid range</p>}
-				</div>
-			)}
-			{rangeValid() && (
-				<form action={handleSubmit}>
-					<div className="flex flex-col items-start">
-						<label htmlFor="title">Title</label>
-						<input required type="text" id="title" name="title" />
-					</div>
-					<input type="hidden" name="commits" value={JSON.stringify(commitsBetween)} />
-					<button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-						Submit
-					</button>
-				</form>
 			)}
 		</div>
 	);

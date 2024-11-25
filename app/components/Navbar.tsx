@@ -3,6 +3,8 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import { ThemeManager } from "./ThemeManager";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
 	const { data: session } = useSession();
@@ -10,9 +12,9 @@ export default function Navbar() {
 
 	return (
 		<div className="flex justify-between items-center py-4">
-			<a href="/">
+			<Link href="/">
 				<h3 className="text-xl font-bold">Changelog</h3>
-			</a>
+			</Link>
 			{!session && (
 				<div className="flex justify-end gap-4 items-center">
 					<button onClick={() => signIn("github")}>Sign in with GitHub</button>
@@ -23,7 +25,7 @@ export default function Navbar() {
 				<div className="flex justify-end items-center gap-3 ">
 				<div className="relative">
 					<button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
-						<img src={session.user?.image || ""} alt="user image" className="w-9 h-9 rounded-full hover:opacity-80 transition-opacity" />
+						<Image src={session.user?.image || ""} alt="user image" className="w-9 h-9 rounded-full hover:opacity-80 transition-opacity" width={36} height={36} />
 					</button>
 					{dropdownOpen && (
 						<div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl">

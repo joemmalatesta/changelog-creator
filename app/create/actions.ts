@@ -1,5 +1,4 @@
 import { Commit } from "@/types/repo";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createChangelog(formData: FormData) {
