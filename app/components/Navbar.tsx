@@ -13,7 +13,7 @@ export default function Navbar() {
 	return (
 		<div className="flex justify-between items-center py-4">
 			<Link href="/">
-				<h3 className="text-xl font-bold">Changelog</h3>
+				<h3 className="text-xl font-bold">Change<span className="text-emerald-500">log</span></h3>
 			</Link>
 			{!session && (
 				<div className="flex justify-end gap-4 items-center">

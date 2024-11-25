@@ -72,21 +72,24 @@ export default function SelectRange({ commits, formAction }: { commits: Commit[]
 	return (
 		<div>
 			{commits.length > 0 ? (
-				<div className="flex gap-2 flex-col">
-					<form action={handleSubmit}>
+				<div>
+					<form className="flex gap-2.5 flex-col" action={handleSubmit}>
 						<div className="flex flex-col items-start">
 							<label htmlFor="title" className="text-sm opacity-50 p-0.5">Changelog Title</label>
 							<input className="p-2 rounded w-full" required type="text" id="title" name="title" placeholder="Version 1.0.0" />
 						</div>
+						<div>
+
 						<ul className="max-h-96 overflow-y-auto">
 							<p className="text-sm opacity-50 p-0.5">Commits</p>
 							{commits.map((commit) => (
+								// TODO: clean up classes here.
 								<li 
 									key={commit.sha} 
 									onClick={() => handleCommitClick(commit)}
 									className={`w-full flex items-center justify-between p-1 cursor-pointer ${
 										(commit === rangeStart || commit === rangeEnd) ? "dark:bg-emerald-600 bg-emerald-400 dark:text-light text-dark" : "hover:bg-neutral-200 dark:hover:bg-neutral-800"
-									} ${rangeStart && rangeEnd && commitsBetween.includes(commit) && (commit !== rangeStart || commit !== rangeEnd) ? "dark:bg-neutral-600/40 bg-neutral-300/30 dark:text-light text-dark" : ""}`}
+									} ${rangeStart && rangeEnd && commitsBetween.includes(commit) && (commit !== rangeStart || commit !== rangeEnd) ? "dark:bg-neutral-600/40 bg-neutral-300/40 dark:text-light text-dark" : ""}`}
 								>
 									<div className="flex items-center gap-2 w-11/12">
 										<p className="whitespace-nowrap overflow-hidden text-ellipsis">{commit.commit.message}</p>
@@ -104,7 +107,7 @@ export default function SelectRange({ commits, formAction }: { commits: Commit[]
 						)}
 						{(rangeStart || rangeEnd) && (
 							<div className="relative p-1 rounded flex flex-col justify-between">
-								{commitsBetween !== null && <p className="text-light/60">{commitsBetween.length} commits selected</p>}
+								{commitsBetween !== null && <p className="opacity-60">{commitsBetween.length} commits selected</p>}
 							</div>
 						)}
 						{rangeValid() && (
@@ -115,6 +118,7 @@ export default function SelectRange({ commits, formAction }: { commits: Commit[]
 								</button>
 							</>
 						)}
+						</div>
 					</form>
 				</div>
 			) : (
