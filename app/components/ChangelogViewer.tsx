@@ -3,10 +3,11 @@
 import { Commit } from "@/types/repo";
 import { useChat } from "ai/react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function ChangelogViewer({ commits, repoName, changelogTitle }: { commits: Commit[]; repoName: string; changelogTitle: string }) {
 	const { messages, setMessages } = useChat();
+	const [finished, setFinished] = useState<boolean>(false);
 	const processedCommits = new Set();
 	useEffect(() => {
 		setMessages([]);
@@ -54,11 +55,22 @@ export default function ChangelogViewer({ commits, repoName, changelogTitle }: {
 		// Process commits sequentially to avoid overwhelming the server
 		async function processCommits() {
 			await Promise.all(commits.map((commit) => getChangelogEntry(commit)));
+			setFinished(true);
+			// Create a prettier changelog.
+			const response = await fetch("/api/detailedChangeLog", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					changelogEntries: messages.map((m) => m.content),
+					repoName,
+				}),
+			});
 		}
 
 		processCommits();
 	}, [commits]);
-	console.log(changelogTitle);
 
 	return (
 		<div className="flex-col pb-10 pt-3 flex items-start gap-3">

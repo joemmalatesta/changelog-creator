@@ -6,7 +6,6 @@ export default function SelectRepoButton({ repos, formAction }: { repos: Reposit
 		await formAction(formData);
 	}
 
-
 	return (
 		<main>
 			<div>
@@ -23,7 +22,7 @@ export default function SelectRepoButton({ repos, formAction }: { repos: Reposit
 						});
 					}}
 				/>
-				<div className="flex flex-col max-h-60 overflow-y-auto items-start">
+				<div className="flex flex-col max-h-96 overflow-y-auto items-start">
 					{repos.map((repo) => (
 						<form key={repo.id} action={handleSubmit} className="w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-md ">
 							<input type="hidden" name="repo" value={JSON.stringify(repo)} />

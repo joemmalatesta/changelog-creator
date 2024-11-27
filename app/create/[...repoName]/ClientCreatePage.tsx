@@ -39,11 +39,22 @@ export default function ClientCreatePage({ repoName, commits }: ClientCreatePage
 				</form>
 				<SelectRange commits={commits} formAction={handleCreateChangelog} />
 			</div>
-			{commitRange.length > 0 && changelogTitle && (
-				<div className="w-3/5">
+			<div className="w-3/5">
+				{commitRange.length > 0 && changelogTitle ? (
 					<ChangelogViewer commits={commitRange} repoName={repoName} changelogTitle={changelogTitle} />
-				</div>
-			)}
+				) : (
+					<div className="flex flex-col items-center justify-center h-full gap-8">
+						<div className="relative">
+							<div className="absolute -inset-1 rounded-lg dark:bg-emerald-400/10 bg-emerald-400/30 blur-xl animate-pulse"></div>
+							<div className="relative rounded-lg p-8">
+								<p className="text-center text-2xl font-bold opacity-70">
+									Select {repoName.split("/")[1]} commit range...
+								</p>
+							</div>
+						</div>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }
