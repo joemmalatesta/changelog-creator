@@ -14,7 +14,7 @@ export default async function Home() {
 
 	return (
 		<main>
-			<h1 className="text-2xl font-bold mb-2">Create new changelog</h1>
+			<h1 className="text-3xl font-bold mb-5">Select a repository to get started</h1>
 			{!session ? (
 				<p>Please log in to create a changelog.</p>
 			) : (

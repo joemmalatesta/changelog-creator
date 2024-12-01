@@ -1,28 +1,35 @@
-import { pgTable, text, uuid, timestamp, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, text, uuid, timestamp, boolean, integer } from "drizzle-orm/pg-core";
 
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  email: text('email').notNull().unique(),
-  createdAt: timestamp('created_at').defaultNow().notNull()
+export const users = pgTable("users", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	email: text("email").notNull().unique(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const changelogs = pgTable('changelogs', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
-  publicSlug: text('public_slug').notNull().unique(),
-  createdAt: timestamp('created_at').defaultNow().notNull()
+export const changelogs = pgTable("changelogs", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	repoId: integer("repo_id").notNull().unique(), // repoId
+	userEmail: text("user_email")
+		.references(() => users.email)
+		.notNull(),
+	publicSlug: text("public_slug").notNull().unique(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const changelogVersions = pgTable('changelog_versions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  changelogId: uuid('changelog_id').references(() => changelogs.id).notNull(),
-  versionNumber: text('version_number').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull()
+export const changelogVersions = pgTable("changelog_versions", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	changelogRepoId: integer("changelog_repo_id")
+		.references(() => changelogs.repoId)
+		.notNull(),
+	title: text("title").notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const changelogEntries = pgTable('changelog_entries', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  changelogVersionId: uuid('changelog_version_id').references(() => changelogVersions.id).notNull(),
-  content: text('content').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull()
+export const changelogEntries = pgTable("changelog_entries", {
+	id: uuid("id").primaryKey(), // commit sha
+	changelogVersionId: uuid("changelog_version_id")
+		.references(() => changelogVersions.id)
+		.notNull(),
+	content: text("content").notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
 });

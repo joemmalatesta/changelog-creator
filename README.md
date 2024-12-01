@@ -12,3 +12,12 @@
 - AI SDK
 - Cursor
 - Vercel
+
+
+## Complications
+- Github repos have no unique identifier.
+  - Using the repo name is not a good long term solution.
+  - Not implemented, but to check if a repo exists with a name change, we can compare the initial commit SHA.
+- Likewise, the github user does not come with a unique identifier.
+  - Using the email is not a good long term solution either. 
+  - I have indexed the email in the users table for the current implementation.
