@@ -14,8 +14,8 @@ export async function POST(req: Request) {
 	const result = streamText({
 		model: openai("gpt-4o-mini"),
 		prompt: await createPrompt(diffs.commitMessage, diffs.files),
-		temperature: 0.7, // Adds some creativity while keeping it professional
-		maxTokens: 100, // Ensures we get a concise response
+		temperature: 0.7, // Adds some creativity 
+		maxTokens: 120, // Ensures we get a concise response
 	});
 
 	return result.toTextStreamResponse();

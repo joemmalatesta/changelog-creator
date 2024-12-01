@@ -5,7 +5,7 @@ import { useChat } from "ai/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function ChangelogViewer({ commits, repoName, changelogTitle }: { commits: Commit[]; repoName: string; changelogTitle: string }) {
+export default function ChangelogViewer({ commits, repoName, changelogTitle, changelogVersionId }: { commits: Commit[]; repoName: string; changelogTitle: string; changelogVersionId: string }) {
 	const { messages, setMessages } = useChat();
 	const [finished, setFinished] = useState<boolean>(false);
 	const processedCommits = new Set();
@@ -16,7 +16,7 @@ export default function ChangelogViewer({ commits, repoName, changelogTitle }: {
 				// Skip if we've already processed this commit (was running twice)
 				if (processedCommits.has(commit.sha)) return;
 				processedCommits.add(commit.sha);
-				const response = await fetch("/api/changelogEntry", {
+				const response = await fetch("/api/generateChangelogEntry", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -47,6 +47,7 @@ export default function ChangelogViewer({ commits, repoName, changelogTitle }: {
 							: [...prev, { id: messageId, role: "assistant" as const, content }];
 					});
 				}
+				await saveChangelogEntry(content, changelogVersionId);
 			} catch (error) {
 				console.error("Error fetching changelog:", error);
 			}
@@ -57,16 +58,26 @@ export default function ChangelogViewer({ commits, repoName, changelogTitle }: {
 			await Promise.all(commits.map((commit) => getChangelogEntry(commit)));
 			setFinished(true);
 			
-			// Create a prettier changelog.
-			const response = await fetch("/api/detailedChangeLog", {
+			// // Create a prettier changelog.
+			// const response = await fetch("/api/detailedChangeLog", {
+			// 	method: "POST",
+			// 	headers: {
+			// 		"Content-Type": "application/json",
+			// 	},
+			// 	body: JSON.stringify({
+			// 		changelogEntries: messages.map((m) => m.content),
+			// 		repoName,
+			// 	}),
+			// });
+		}
+
+		async function saveChangelogEntry(content: string, changelogVersionId: string) {
+			await fetch("/api/changelogEntry", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({
-					changelogEntries: messages.map((m) => m.content),
-					repoName,
-				}),
+				body: JSON.stringify({ content, changelogVersionId }),
 			});
 		}
 
@@ -74,10 +85,11 @@ export default function ChangelogViewer({ commits, repoName, changelogTitle }: {
 	}, [commits]);
 
 	return (
-		<div className="flex-col pb-10 pt-3 flex items-start gap-3">
+		<div>
 			<h2 className="text-2xl font-bold">{changelogTitle}</h2>
-			{messages
-				.map(m => ({
+			<div className=" flex-col pt-3 flex items-start gap-3 w-full border-b dark:border-light/10 border-dark/10 pb-4">
+				{messages
+					.map((m) => ({
 					message: m,
 					index: commits.findIndex(c => c.sha === m.id.split("-")[0])
 				}))
@@ -100,6 +112,10 @@ export default function ChangelogViewer({ commits, repoName, changelogTitle }: {
 						<p className="text-base font-medium">• {m.content}</p>
 					</div>
 				))}
+			</div>
+			<p className="text-sm text-dark/60 dark:text-light/40">
+				commit links will not be shown in public changelogs
+			</p>
 		</div>
 	);
 }

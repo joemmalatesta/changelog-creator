@@ -8,6 +8,7 @@ import { fetchUserRepos } from "../dataFetch/repository";
 import { Suspense } from "react";
 import ReposLoading from "./components/ReposLoading";
 import { db } from "@/db";
+import { createOrGetChangelog } from "@/db/actions";
 
 export default async function Home() {
 	const session = await getServerSession(authOptions);
@@ -35,6 +36,9 @@ async function RepoLoader({ session }: { session: any }) {
 
 async function selectRepo(formData: FormData) {
 	"use server";
+	const session = await getServerSession(authOptions);
+	if (!session || !session.user) return;
 	const repoData = JSON.parse(formData.get("repo") as string) as Repository;
+	createOrGetChangelog(session.user.email!, repoData.full_name, repoData.full_name);
 	redirect(`/create/${repoData.full_name}`);
 }

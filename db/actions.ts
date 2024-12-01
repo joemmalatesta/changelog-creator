@@ -25,40 +25,44 @@ export async function getOrCreateUser(email: string) {
 }
 
 // CRUD for entries
-export async function createChangelogEntry(changelogEntry: string, changelogVersionId: string) {
-	await db.insert(changelogEntries).values({
-		id: crypto.randomUUID(),
-		content: changelogEntry,
-		changelogVersionId: changelogVersionId,
-	});
+export async function saveChangelogEntry(changelogEntry: string, changelogVersionId: string, id?: string) {
+	if (id) {
+		await db
+			.update(changelogEntries)
+			.set({
+				content: changelogEntry,
+			})
+			.where(eq(changelogEntries.id, id));
+	} else {
+		await db.insert(changelogEntries).values({
+			id: crypto.randomUUID(),
+			content: changelogEntry, 
+			changelogVersionId: changelogVersionId,
+		});
+	}
 }
+
 
 export async function getChangelogEntries(changelogVersionId: string) {
 	return await db.select().from(changelogEntries).where(eq(changelogEntries.changelogVersionId, changelogVersionId));
 }
 
-export async function editChangelogEntry(id: string, changelogEntry: string) {
-	await db
-		.update(changelogEntries)
-		.set({
-			content: changelogEntry,
-		})
-		.where(eq(changelogEntries.id, id));
-}
-
 // CRUD for versions
-export async function createChangelogVersion(changelogVersion: string, changelogRepoId: number) {
+export async function createChangelogVersion(title: string, repoName: string) {
+	console.log(repoName);
+	const changelog = await db.select().from(changelogs).where(eq(changelogs.repoName, repoName));
+	console.log(changelog);
 	const id = crypto.randomUUID();
 	await db.insert(changelogVersions).values({
-		id: id,
-		title: changelogVersion,
-		changelogRepoId: changelogRepoId,
+		id,
+		title,
+		changelogId: changelog[0].id,
 	});
 	return id;
 }
 
-export async function getChangelogVersions(changelogRepoId: number) {
-	return await db.select().from(changelogVersions).where(eq(changelogVersions.changelogRepoId, changelogRepoId));
+export async function getChangelogVersions(changelogId: string) {
+	return await db.select().from(changelogVersions).where(eq(changelogVersions.changelogId, changelogId));
 }
 
 export async function editChangelogVersion(id: string, changelogVersion: string) {
@@ -71,13 +75,13 @@ export async function editChangelogVersion(id: string, changelogVersion: string)
 }
 
 // CRUD for changelogs
-export async function createOrGetChangelog(userEmail: string, publicSlug: string, repoId: number) {
-	const existingChangelog = await db.select().from(changelogs).where(eq(changelogs.repoId, repoId));
+export async function createOrGetChangelog(userEmail: string, publicSlug: string, repoName: string) {
+	const existingChangelog = await db.select().from(changelogs).where(eq(changelogs.repoName, repoName));
 	if (existingChangelog.length > 0) {
 		return existingChangelog[0];
 	}
 	await db.insert(changelogs).values({
-		repoId: repoId,
+		repoName: repoName,
 		userEmail: userEmail,
 		publicSlug: publicSlug,
 	});

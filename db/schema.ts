@@ -8,18 +8,19 @@ export const users = pgTable("users", {
 
 export const changelogs = pgTable("changelogs", {
 	id: uuid("id").primaryKey().defaultRandom(),
-	repoId: integer("repo_id").notNull().unique(), // repoId
+	repoName: text("repo_name").notNull(),
 	userEmail: text("user_email")
 		.references(() => users.email)
 		.notNull(),
 	publicSlug: text("public_slug").notNull().unique(),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
+	// Would add initial commit here to compare.
 });
 
 export const changelogVersions = pgTable("changelog_versions", {
 	id: uuid("id").primaryKey().defaultRandom(),
-	changelogRepoId: integer("changelog_repo_id")
-		.references(() => changelogs.repoId)
+	changelogId: uuid("changelog_id")
+		.references(() => changelogs.id)
 		.notNull(),
 	title: text("title").notNull(),
 	createdAt: timestamp("created_at").defaultNow().notNull(),

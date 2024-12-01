@@ -14,11 +14,13 @@ interface ClientCreatePageProps {
 export default function ClientCreatePage({ repoName, commits }: ClientCreatePageProps) {
 	const [commitRange, setCommitRange] = useState<Commit[]>([]);
 	const [changelogTitle, setChangelogTitle] = useState<string>("");
-
+	const [changelogVersionId, setChangelogVersionId] = useState<string>("");
 	const handleCreateChangelog = async (formData: FormData) => {
-		const result = await createChangelog(formData);
+		console.log(repoName);
+		const result = await createChangelog(formData, repoName);
 		setCommitRange(result.commits);
 		setChangelogTitle(result.title);
+		setChangelogVersionId(result.changelogVersionId);
 		return result;
 	};
 
@@ -40,7 +42,7 @@ export default function ClientCreatePage({ repoName, commits }: ClientCreatePage
 			</div>
 			<div className="w-3/5">
 				{commitRange.length > 0 && changelogTitle ? (
-					<ChangelogViewer commits={commitRange} repoName={repoName} changelogTitle={changelogTitle} />
+					<ChangelogViewer commits={commitRange} repoName={repoName} changelogTitle={changelogTitle} changelogVersionId={changelogVersionId} />
 				) : (
 					<div className="flex flex-col items-center justify-center h-full gap-8">
 						<div className="relative">

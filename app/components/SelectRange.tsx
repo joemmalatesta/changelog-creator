@@ -8,7 +8,7 @@ export default function SelectRange({
 	formAction,
 }: {
 	commits: Commit[];
-	formAction: (formData: FormData) => Promise<{ commits: Commit[]; title: string }>;
+	formAction: (formData: FormData) => Promise<{ commits: Commit[]; title: string; changelogVersionId: string }>;
 }) {
 	const [rangeStart, setRangeStart] = useState<Commit | null>(null);
 	const [rangeEnd, setRangeEnd] = useState<Commit | null>(null);
