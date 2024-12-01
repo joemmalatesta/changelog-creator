@@ -56,6 +56,7 @@ export default function ChangelogViewer({ commits, repoName, changelogTitle }: {
 		async function processCommits() {
 			await Promise.all(commits.map((commit) => getChangelogEntry(commit)));
 			setFinished(true);
+			
 			// Create a prettier changelog.
 			const response = await fetch("/api/detailedChangeLog", {
 				method: "POST",

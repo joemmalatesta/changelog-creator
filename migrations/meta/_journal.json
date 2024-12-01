@@ -8,6 +8,20 @@
       "when": 1731279156880,
       "tag": "0000_wealthy_loners",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1732935748504,
+      "tag": "0001_fine_cerise",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1733024955680,
+      "tag": "0002_magical_black_knight",
+      "breakpoints": true
     }
   ]
 }

@@ -14,20 +14,17 @@ export async function fetchUserRepos(accessToken: string) {
 	if (!response.ok) {
 		throw new Error("Failed to fetch repositories");
 	}
-
-	return response.json();
+	return await response.json();
 }
 
 // Get repo data for a single repo
 export async function getRepoData(repoId: string, accessToken: string) {
 	"use server";
-	console.log(repoId, accessToken);
 	const repo: Repository = await fetch(`https://api.github.com/repos/${repoId}`, {
 		headers: {
 			Authorization: `Bearer ${accessToken}`,
 		},
 	}).then((res) => res.json());
-	console.log(repo);
 	return repo;
 }
 

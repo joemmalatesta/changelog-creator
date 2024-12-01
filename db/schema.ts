@@ -3,7 +3,6 @@ import { pgTable, text, uuid, timestamp, boolean } from 'drizzle-orm/pg-core';
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').notNull().unique(),
-  name: text('name').notNull().unique(),
   createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
@@ -11,7 +10,6 @@ export const changelogs = pgTable('changelogs', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id').references(() => users.id).notNull(),
   publicSlug: text('public_slug').notNull().unique(),
-  versionIds: text('version_ids').array().notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull()
 });
 

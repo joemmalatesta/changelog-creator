@@ -26,8 +26,6 @@ async function getDiffsFromCommit(repoName: string, commitId: string) {
 	if (!session?.access_token) {
 		throw new Error("Authentication required");
 	}
-	console.log("repoName", repoName);
-	console.log("commitId", commitId);
 
 	const response = await fetch(`https://api.github.com/repos/${repoName}/commits/${commitId}`, {
 		headers: {

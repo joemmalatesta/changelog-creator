@@ -18,7 +18,6 @@ export default function ClientCreatePage({ repoName, commits }: ClientCreatePage
 	const handleCreateChangelog = async (formData: FormData) => {
 		const result = await createChangelog(formData);
 		setCommitRange(result.commits);
-		console.log(result.title);
 		setChangelogTitle(result.title);
 		return result;
 	};

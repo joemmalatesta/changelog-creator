@@ -1,3 +1,4 @@
+import { getOrCreateUser } from "@/db/actions";
 import { Account, NextAuthOptions, Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import GithubProvider from 'next-auth/providers/github'
@@ -27,6 +28,12 @@ export const authOptions: NextAuthOptions = {
 				token.access_token = account.access_token
 			}
 			return token
+		},
+		signIn: async ({ user }) => {
+			// Check if user exists in our database
+			const existingUser = await getOrCreateUser(user.email!)
+
+			return true
 		}
 	}
 }
