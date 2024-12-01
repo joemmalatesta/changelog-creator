@@ -92,5 +92,9 @@ export async function getChangelogs(userEmail: string) {
 }
 
 export async function getChangelogByPublicSlug(publicSlug: string) {
-	return await db.select().from(changelogs).where(eq(changelogs.publicSlug, publicSlug));
+	console.log(publicSlug);
+	return await db.select({
+		id: changelogVersions.id,
+		title: changelogVersions.title,
+	}).from(changelogs).innerJoin(changelogVersions, eq(changelogs.id, changelogVersions.changelogId)).where(eq(changelogs.publicSlug, publicSlug));
 }
