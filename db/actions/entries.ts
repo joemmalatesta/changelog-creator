@@ -3,20 +3,27 @@ import { eq } from "drizzle-orm";
 import { changelogEntries } from "../schema";
 
 export async function saveChangelogEntry(type: string, changelogEntry: string, changelogVersionId: string, id?: string) {
-    if (id) {
+    try {
         await db
-            .update(changelogEntries)
-            .set({
+            .insert(changelogEntries)
+            .values({
+                id: id || crypto.randomUUID(),
+                type: type,
                 content: changelogEntry,
+                changelogVersionId: changelogVersionId,
             })
-            .where(eq(changelogEntries.id, id));
-    } else {
-        await db.insert(changelogEntries).values({
-            id: crypto.randomUUID(),
-            type: type,
-            content: changelogEntry, 
-            changelogVersionId: changelogVersionId,
-        });
+            .onConflictDoUpdate({
+                target: changelogEntries.id,
+                set: {
+                    content: changelogEntry,
+                }
+            });
+    } catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to save changelog entry: ${error.message}`);
+        } else {
+            throw new Error('Failed to save changelog entry');
+        }
     }
 }
 

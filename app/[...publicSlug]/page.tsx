@@ -1,4 +1,5 @@
 import { getChangelogByPublicSlug } from "@/db/actions/changelogs";
+import { ChangelogEntry } from "@/types/Changelog";
 
 type tParams = Promise<{ publicSlug: string[] }>;
 
@@ -15,6 +16,25 @@ export default async function ChangelogPage({ params }: { params: tParams }) {
 					<h2 className="text-2xl font-bold">{changelogVersion.title}</h2>
 				</div>
 			))}
+		</div>
+	);
+}
+
+
+function ChangelogViewer({ changelogTitle, entries }: { changelogTitle: string, entries: ChangelogEntry[] }) {
+	return (	
+		<div>
+			<h1 className="text-4xl font-bold mb-4">{changelogTitle}</h1>
+			<div className="flex-col pt-3 flex items-start gap-3 w-full">
+				{entries.map(entry => (
+					entry.type === 'title' ? null : (
+						<div key={entry.id} className="prose dark:prose-invert w-full">
+							<h2>{entry.type}</h2>
+						<p>{entry.content}</p>
+					</div>	
+					)
+				))}
+			</div>
 		</div>
 	);
 }

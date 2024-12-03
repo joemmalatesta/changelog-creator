@@ -6,7 +6,7 @@ export async function POST(req: Request) {
 	try {
 		const { entries	, changelogVersionId } = await req.json();
 		console.log(entries, changelogVersionId);
-		entries.forEach((entry: ChangelogEntry) => saveChangelogEntry(entry.type, entry.content, entry.id));
+		entries.forEach((entry: ChangelogEntry) => saveChangelogEntry(entry.type, entry.content, changelogVersionId, entry.id));
 		return NextResponse.json({ success: true });
 	} catch (error) {
 		if (error instanceof Error) {
