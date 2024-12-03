@@ -2,7 +2,7 @@
 
 import { ChangelogEntry } from "@/types/Changelog";
 import { Commit } from "@/types/repo";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const readableTypes = {
 	title: "Title",
@@ -86,19 +86,16 @@ export default function ChangelogViewer({
 	const [entries, setEntries] = useState<ChangelogEntry[]>([]);
 	const [changelogTitleUpdated, setChangelogTitleUpdated] = useState(changelogTitle);
 	const [isLoading, setIsLoading] = useState(false);
-	const [useEffectRan, setUseEffectRan] = useState(false);
+	const generateChangelogRan = useRef(false);
 
 	useEffect(() => {
-		if (useEffectRan) return;
-		setUseEffectRan(true);
+		if (generateChangelogRan.current) return;
+		generateChangelogRan.current = true;
+
 		setEntries([]);
 		setIsLoading(true);
-		async function getCommitSummaries() {
-			for (const commit of commits) {
-				if (processedCommits.has(commit.sha)) continue;
-				processedCommits.add(commit.sha);
-			}
 
+		async function getCommitSummaries() {
 			const commitPromises = commits
 				.filter((commit) => !processedCommits.has(commit.sha))
 				.map(async (commit) => {
@@ -110,6 +107,7 @@ export default function ChangelogViewer({
 						});
 
 						if (!response.ok) throw new Error("Failed to fetch commit summary");
+						processedCommits.add(commit.sha);
 						return response.text();
 					} catch (error) {
 						console.error("Error fetching commit summary:", error);
@@ -123,6 +121,7 @@ export default function ChangelogViewer({
 
 		async function generateChangelog(summaries: string[]) {
 			try {
+				console.log("Generating changelog...");
 				const response = await fetch("/api/generateChangelog", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
@@ -136,7 +135,6 @@ export default function ChangelogViewer({
 				if (!response.ok) throw new Error("Failed to fetch commit summary");
 				const content = await response.text();
 				const parsedContent = JSON.parse(content);
-				const entries: ChangelogEntry[] = [];
 
 				// Map the API response keys to our entry types
 				const typeMapping = {
@@ -147,25 +145,24 @@ export default function ChangelogViewer({
 					breakingChanges: "breakingChange",
 				} as const;
 
-				// Loop through each key in the parsed content
-				for (const [key, content] of Object.entries(parsedContent)) {
+
+				const newEntries = Object.entries(parsedContent).reduce<ChangelogEntry[]>((acc, [key, content]) => {
 					const type = typeMapping[key as keyof typeof typeMapping];
 					if (type) {
-						setEntries((prevEntries) => [
-							...prevEntries,
-							{
-								id: crypto.randomUUID(),
-								type: type,
-								content: content as string,
-							},
-						]);
+						if (type === "title") {
+							setChangelogTitleUpdated(content as string);
+						}
+						acc.push({
+							id: crypto.randomUUID(),
+							type: type, 
+							content: content as string,
+						});
 					}
-					if (type === "title") {
-						setChangelogTitleUpdated(content as string);
-					}
-				}
+					return acc;
+				}, []);
 
-				await Promise.all(entries.map((entry) => saveChangelogEntry([entry], changelogVersionId)));
+				setEntries(newEntries);
+				await saveChangelogEntry(newEntries, changelogVersionId);
 			} catch (error) {
 				console.error("Error generating changelog:", error);
 			}
@@ -180,7 +177,6 @@ export default function ChangelogViewer({
 		}
 
 		async function processChangelog() {
-			if (entries.length > 0) return;
 			const summaries = await getCommitSummaries();
 			// Filter out any null values before passing to generateChangelog
 			const validSummaries = summaries.filter((summary): summary is string => summary !== null);
@@ -189,7 +185,7 @@ export default function ChangelogViewer({
 		}
 
 		processChangelog();
-	}, []);
+	}, [commits, repoName, changelogVersionId]);
 
 	function addLink(formData: FormData) {
 		console.log(formData);
