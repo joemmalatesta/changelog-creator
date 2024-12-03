@@ -30,9 +30,7 @@ export const authOptions: NextAuthOptions = {
 			return token
 		},
 		signIn: async ({ user }) => {
-			// Check if user exists in our database
-			const existingUser = await getOrCreateUser(user.email!)
-
+			await getOrCreateUser(user.email!)
 			return true
 		}
 	}

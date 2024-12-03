@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 export default function ChangelogViewer({ commits, repoName, changelogTitle, changelogVersionId }: { commits: Commit[]; repoName: string; changelogTitle: string; changelogVersionId: string }) {
 	const { messages, setMessages } = useChat();
-	const [finished, setFinished] = useState<boolean>(false);
+	const [	finished, setFinished] = useState<boolean>(false);
 	const processedCommits = new Set();
 	useEffect(() => {
 		setMessages([]);
@@ -57,6 +57,7 @@ export default function ChangelogViewer({ commits, repoName, changelogTitle, cha
 		async function processCommits() {
 			await Promise.all(commits.map((commit) => getChangelogEntry(commit)));
 			setFinished(true);
+			if (finished) return;
 			
 			// // Create a prettier changelog.
 			// const response = await fetch("/api/detailedChangeLog", {
@@ -82,7 +83,7 @@ export default function ChangelogViewer({ commits, repoName, changelogTitle, cha
 		}
 
 		processCommits();
-	}, [commits]);
+	}, []);
 
 	return (
 		<div>

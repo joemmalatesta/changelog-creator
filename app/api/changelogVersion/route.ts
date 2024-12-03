@@ -1,4 +1,3 @@
-import { db } from "@/db";
 import { createChangelogVersion } from "@/db/actions";
 import { NextResponse } from "next/server";
 
@@ -7,8 +6,12 @@ export async function POST(req: Request) {
 		const { title, repoName } = await req.json();
 		const changelogVersionId = await createChangelogVersion(title, repoName);
 		return NextResponse.json({ changelogVersionId });
-	} catch (error: any) {
-		return NextResponse.json({ error: error.message }, { status: 500 });
+	} catch (error) {
+		if (error instanceof Error) {
+			return NextResponse.json({ error: error.message }, { status: 500 });
+		} else {
+			return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
+		}
 	}
 }
 

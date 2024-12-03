@@ -4,9 +4,9 @@ import ClientCreatePage from './ClientCreatePage';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/utils/authOptions';
 import { getRepoInformation } from '@/dataFetch/repository';
-type tParams = Promise<{ slug: string[] }>;
+type tParams = Promise<{ repoName: string[] }>;
 
-export default async function CreateChangelog({ params }: { params: { repoName: string[] } }) {
+export default async function CreateChangelog({ params }: { params: tParams }) {
 	const { repoName } = await params;
 	const session = await getServerSession(authOptions);
 	let commits: Commit[] = [];

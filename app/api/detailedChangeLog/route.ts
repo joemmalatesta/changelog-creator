@@ -1,9 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/utils/authOptions";
-import { Commit } from "@/types/repo";
-import { z } from "zod";
+
 
 export async function POST(req: Request) {
 	const { changelogEntries, repoName } = await req.json();
@@ -55,9 +52,9 @@ async function createDetailedPrompt(changelogEntries: string[], repoName: string
 }
 
 
-interface Changelog {
-    whatsNew: string;
-    bugFixes: string;
-    breakingChanges: string;
-    improvements: string;
-}
+// interface Changelog {
+//     whatsNew: string;
+//     bugFixes: string;
+//     breakingChanges: string;
+//     improvements: string;
+// }

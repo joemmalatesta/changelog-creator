@@ -1,4 +1,3 @@
-import { createChangelogVersion } from "@/db/actions";
 import { Commit } from "@/types/repo";
 import { redirect } from "next/navigation";
 

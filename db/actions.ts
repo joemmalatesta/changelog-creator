@@ -2,26 +2,42 @@ import { db } from "./drizze";
 import { eq } from "drizzle-orm";
 import { users, changelogs, changelogEntries, changelogVersions } from "./schema";
 
-export async function getOrCreateUser(email: string) {
-	// Check if user exists
-	const existingUser = await db.select().from(users).where(eq(users.email, email));
-
-	// If user exists, return the first match
-	if (existingUser.length > 0) {
-		return existingUser[0];
+async function withRetry<T>(
+	operation: () => Promise<T>,
+	retries = 3,
+	delay = 1000
+): Promise<T> {
+	for (let i = 0; i < retries; i++) {
+		try {
+			return await operation();
+		} catch (error) {
+			if (i === retries - 1) throw error;
+			console.warn(`Database operation failed, attempt ${i + 1} of ${retries}:`, error);
+			await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i))); // Exponential backoff
+		}
 	}
+	throw new Error('Retry failed'); // TypeScript requires this
+}
 
-	// If no user found, create new user
-	const newUser = await db
-		.insert(users)
-		.values({
-			id: crypto.randomUUID(),
-			email: email,
-			createdAt: new Date(),
-		})
-		.returning();
+export async function getOrCreateUser(email: string) {
+	return withRetry(async () => {
+		const existingUser = await db.select().from(users).where(eq(users.email, email));
 
-	return newUser[0];
+		if (existingUser.length > 0) {
+			return existingUser[0];
+		}
+
+		const newUser = await db
+			.insert(users)
+			.values({
+				id: crypto.randomUUID(),
+				email: email,
+				createdAt: new Date(),
+			})
+			.returning();
+
+		return newUser[0];
+	});
 }
 
 // CRUD for entries
@@ -76,14 +92,16 @@ export async function editChangelogVersion(id: string, changelogVersion: string)
 
 // CRUD for changelogs
 export async function createOrGetChangelog(userEmail: string, publicSlug: string, repoName: string) {
-	const existingChangelog = await db.select().from(changelogs).where(eq(changelogs.repoName, repoName));
-	if (existingChangelog.length > 0) {
-		return existingChangelog[0];
-	}
-	await db.insert(changelogs).values({
-		repoName: repoName,
-		userEmail: userEmail,
-		publicSlug: publicSlug,
+	return withRetry(async () => {
+		const existingChangelog = await db.select().from(changelogs).where(eq(changelogs.repoName, repoName));
+		if (existingChangelog.length > 0) {
+			return existingChangelog[0];
+		}
+		return await db.insert(changelogs).values({
+			repoName: repoName,
+			userEmail: userEmail,
+			publicSlug: publicSlug,
+		});
 	});
 }
 

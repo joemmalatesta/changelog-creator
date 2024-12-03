@@ -42,7 +42,7 @@ async function getDiffsFromCommit(repoName: string, commitId: string) {
 	const commit: Commit = await response.json();
 
 	const files = await Promise.all(
-		commit.files.map(async (file: any) => ({
+		commit.files.map(async (file: DiffFile) => ({
 			filename: file.filename,
 			status: file.status,
 			additions: file.additions,
@@ -57,7 +57,7 @@ async function getDiffsFromCommit(repoName: string, commitId: string) {
 	};
 }
 
-async function createPrompt(commitMessage: string, diffs: any[]) {
+async function createPrompt(commitMessage: string, diffs: DiffFile[]) {
 	const diffsSummary = diffs
 		.map(
 			(diff) => `
@@ -79,4 +79,13 @@ Changes made:
 ${diffsSummary}
 
 Changelog entry:`;
+}
+
+
+interface DiffFile {
+	filename: string;
+	status: string;
+	additions: number;
+	deletions: number;
+	patch?: string;
 }

@@ -15,3 +15,16 @@ export const db = drizzle(sql, {
     changelogEntries
   }
 });
+
+// Optionally add retry logic
+const executeWithRetry = async (query: any, retries = 3) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await query;
+    } catch (error: any) {
+      if (i === retries - 1) throw error;
+      console.warn(`Database query failed, attempt ${i + 1} of ${retries}:`, error);
+      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i))); // Exponential backoff
+    }
+  }
+};

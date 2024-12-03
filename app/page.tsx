@@ -1,5 +1,5 @@
 "use server";
-import { getServerSession } from "next-auth";
+import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/app/utils/authOptions";
 import { Repository } from "@/types/repo";
 import { redirect } from "next/navigation";
@@ -7,7 +7,6 @@ import SelectRepoButton from "./components/SelectRepo";
 import { fetchUserRepos } from "../dataFetch/repository";
 import { Suspense } from "react";
 import ReposLoading from "./components/ReposLoading";
-import { db } from "@/db";
 import { createOrGetChangelog } from "@/db/actions";
 
 export default async function Home() {
@@ -28,7 +27,7 @@ export default async function Home() {
 }
 
 // Separate component to handle the async repos loading
-async function RepoLoader({ session }: { session: any }) {
+async function RepoLoader({ session }: { session: Session }) {
 	const repos = session?.access_token ? await fetchUserRepos(session.access_token) : [];
 	
 	return <SelectRepoButton repos={repos} formAction={selectRepo} />;
