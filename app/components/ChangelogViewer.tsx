@@ -3,7 +3,6 @@
 import { ChangelogEntry } from "@/types/Changelog";
 import { Commit } from "@/types/repo";
 import { useChat } from "ai/react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const typeToHeader = {
@@ -47,6 +46,7 @@ export default function ChangelogViewer({
 	const { messages, setMessages } = useChat();
 	const [finished, setFinished] = useState<boolean>(false);
 	const processedCommits = new Set();
+	console.log(finished);
 
 	useEffect(() => {
 		setMessages([]);

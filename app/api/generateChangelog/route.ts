@@ -55,8 +55,8 @@ async function createDetailedPrompt(commitSummaries: string[], repoName: string)
 
 
 function parseJSON(text: string) {
-    let startIndex = text.indexOf('{');
-    let endIndex = text.lastIndexOf('}');
+    const startIndex = text.indexOf('{');
+    const endIndex = text.lastIndexOf('}');
     if (startIndex >= 0 && endIndex >= 0) {
         const jsonContent = text.substring(startIndex, endIndex + 1);
         return JSON.parse(jsonContent);
