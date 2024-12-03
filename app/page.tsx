@@ -7,7 +7,7 @@ import SelectRepoButton from "./components/SelectRepo";
 import { fetchUserRepos } from "../dataFetch/repository";
 import { Suspense } from "react";
 import ReposLoading from "./components/ReposLoading";
-import { createOrGetChangelog } from "@/db/actions";
+import { createOrGetChangelog } from "@/db/actions/changelogs";
 
 export default async function Home() {
 	const session = await getServerSession(authOptions);

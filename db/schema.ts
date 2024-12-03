@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, timestamp, boolean, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, timestamp, boolean, integer, date } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
 	id: uuid("id").primaryKey().defaultRandom(),
@@ -23,6 +23,8 @@ export const changelogVersions = pgTable("changelog_versions", {
 		.references(() => changelogs.id)
 		.notNull(),
 	title: text("title").notNull(),
+	startDate: date("start_date"),
+	endDate: date("end_date"),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -31,6 +33,7 @@ export const changelogEntries = pgTable("changelog_entries", {
 	changelogVersionId: uuid("changelog_version_id")
 		.references(() => changelogVersions.id)
 		.notNull(),
-	content: text("content").notNull(),
+	type: text("type").notNull(), // "title", "feature", "bugfix", "improvement", "breakingChange", "link"
+	content: text("content"),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 });

@@ -1,24 +1,24 @@
 import { openai } from "@ai-sdk/openai";
-import { streamText } from "ai";
+import { generateText } from "ai";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/utils/authOptions";
 import { Commit } from "@/types/repo";
 
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+// Allow streaming responses up to 10 seconds
+export const maxDuration = 10;
 
 export async function POST(req: Request) {
 	const { repoName, commitId } = await req.json();
 	const diffs = await getDiffsFromCommit(repoName, commitId);
 
-	const result = streamText({
+	const {text} = await generateText({
 		model: openai("gpt-4o-mini"),
 		prompt: await createPrompt(diffs.commitMessage, diffs.files),
 		temperature: 0.7, // Adds some creativity 
-		maxTokens: 120, // Ensures we get a concise response
+		maxTokens: 100, // Ensures we get a concise response
 	});
 
-	return result.toTextStreamResponse();
+	return new Response(text);
 }
 
 async function getDiffsFromCommit(repoName: string, commitId: string) {
@@ -71,7 +71,7 @@ ${diff.patch || "No patch available"}
 		.join("\n");
 
 	return `Generate a single, concise changelog entry (1-2 sentences) based on the following commit changes.
-Focus on the business impact or user-facing changes rather than technical details.
+Focus mainly on the business impact and user-facing changes but touch on technical details if necessary.
 Original commit message: "${commitMessage}"
 
 

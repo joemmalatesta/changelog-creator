@@ -80,12 +80,7 @@ export default function SelectRange({
 			{commits.length > 0 ? (
 				<div>
 					<form className="flex gap-2.5 flex-col" action={handleSubmit}>
-						<div className="flex flex-col items-start">
-							<label htmlFor="title" className="text-sm opacity-50 p-0.5">
-								Changelog Title
-							</label>
-							<input className="p-2 rounded w-full" required type="text" id="title" name="title" placeholder="Version 1.0.0" />
-						</div>
+						<input className="hidden" required type="text" id="title" name="title" value=" " readOnly />
 						<div>
 							<p className="text-sm opacity-50 p-0.5">Commits</p>
 							<ul className="max-h-96 overflow-y-auto">
@@ -95,9 +90,9 @@ export default function SelectRange({
 										onClick={() => handleCommitClick(commit)}
 										className={`w-full flex items-center justify-between p-1 cursor-pointer ${
 											commit === rangeStart || commit === rangeEnd
-												? "dark:bg-emerald-600/70 bg-emerald-400/70 dark:text-light text-dark"
+												? "dark:bg-emerald-600/70 bg-emerald-400/70 "
 												: rangeStart && rangeEnd && commitsBetween.includes(commit)
-												? "dark:bg-neutral-600/40 bg-neutral-300/40 dark:text-light text-dark"
+												? "dark:bg-neutral-600/40 bg-neutral-300/40 "
 												: "hover:bg-neutral-200 dark:hover:bg-neutral-800"
 										}`}
 									>
@@ -109,11 +104,11 @@ export default function SelectRange({
 								))}
 							</ul>
 
-							{!rangeStart && !rangeEnd && <p className="opacity-50 p-0.5 text-emerald-400">Select Starting Commit...</p>}
-							{rangeStart && !rangeEnd && <p className="opacity-50 p-0.5 text-emerald-400">Select Ending Commit...</p>}
+							{!rangeStart && !rangeEnd && <p className="opacity-60 p-0.5 text-lg text-center bg-neutral-200 dark:bg-neutral-800 rounded-t-md">Select Starting Commit...</p>}
+							{rangeStart && !rangeEnd && <p className="opacity-60 p-0.5 text-lg text-center bg-neutral-200 dark:bg-neutral-800 rounded-t-md">Select Ending Commit...</p>}
 							{rangeStart && rangeEnd && (
-								<div className="relative p-1 rounded flex flex-col justify-between">
-									{commitsBetween !== null && <p className="opacity-60">{commitsBetween.length} commits selected</p>}
+								<div className="relative rounded flex flex-col justify-between">
+									{commitsBetween !== null && <p className="opacity-60 p-0.5 text-lg text-center bg-neutral-200 dark:bg-neutral-800 rounded-t-md">{commitsBetween.length} commits selected</p>}
 								</div>
 							)}
 							{!rangeValid() && <div className="h-10 opacity-0" />}

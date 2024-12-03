@@ -1,10 +1,11 @@
-import { createChangelogVersion } from "@/db/actions";
+import { createChangelogVersion } from "@/db/actions/versions";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
 	try {
-		const { title, repoName } = await req.json();
-		const changelogVersionId = await createChangelogVersion(title, repoName);
+		const { title, repoName, startDate, endDate } = await req.json();
+		console.log(startDate, endDate);
+		const changelogVersionId = await createChangelogVersion(title, repoName, startDate, endDate);
 		return NextResponse.json({ changelogVersionId });
 	} catch (error) {
 		if (error instanceof Error) {

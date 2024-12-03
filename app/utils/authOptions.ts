@@ -1,4 +1,4 @@
-import { getOrCreateUser } from "@/db/actions";
+import { getOrCreateUser } from "@/db/actions/users";
 import { Account, NextAuthOptions, Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import GithubProvider from 'next-auth/providers/github'

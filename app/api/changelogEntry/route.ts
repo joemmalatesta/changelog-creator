@@ -1,11 +1,12 @@
-import { saveChangelogEntry, getChangelogEntries } from "@/db/actions";
+import { saveChangelogEntry, getChangelogEntries } from "@/db/actions/entries";
 import { NextResponse } from "next/server";
+import { ChangelogEntry } from "@/types/Changelog";
 
 export async function POST(req: Request) {
 	try {
-		const { content, changelogVersionId } = await req.json();
-		console.log(content, changelogVersionId);
-		await saveChangelogEntry(content, changelogVersionId);
+		const { entries	, changelogVersionId } = await req.json();
+		console.log(entries, changelogVersionId);
+		entries.forEach((entry: ChangelogEntry) => saveChangelogEntry(entry.type, entry.content, entry.id));
 		return NextResponse.json({ success: true });
 	} catch (error) {
 		if (error instanceof Error) {
@@ -32,8 +33,8 @@ export async function GET(req: Request) {
 
 export async function PUT(req: Request) {
 	try {
-		const { id, changelogEntry } = await req.json();
-		await saveChangelogEntry(id, changelogEntry);
+		const { id, content, type } = await req.json();
+		await saveChangelogEntry(type, content, id);
 		return NextResponse.json({ success: true });
 	} catch (error) {
 		if (error instanceof Error) {

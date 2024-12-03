@@ -1,4 +1,4 @@
-import { getChangelogByPublicSlug } from "@/db/actions";
+import { getChangelogByPublicSlug } from "@/db/actions/changelogs";
 
 type tParams = Promise<{ publicSlug: string[] }>;
 
