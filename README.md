@@ -3,13 +3,27 @@
 - This would likely work better with PR's given the greater context added in comments and code review history.
   - That said, to minimize scope and because many of my personal projects lack decent PR's, I've focused on commits.
 
+## Setup 
+By adding a `.env` with the following values, it should work but I'm not going to spend a ton of time wiriting up a how to (unless requested)
+```
+.env
+GITHUB_ID = personal auth ID you get from https://github.com/settings/tokens
+GITHUB_SECRET = personal auth token you get from ^^^^^
+NEXTAUTH_URL = http://localhost:3000
+NEXTAUTH_SECRET = Random key you create
+JWT_SECRET = Likewise ^^^^ actually don't know if both are necessary
+NEON_DATABASE_URL = obtained from making a db at neon.tech
+OPENAI_API_KEY = sk-...
+```
+Byeond adding the values, you'll likely need to run `drizzlekit push` but again, untested for now.
 
 ## Tools
 - Next
 - Tailwind
 - NextAuth
 - Neon DB
-- AI SDK
+- Drizzle ORM
+- AI SDK (4o-mini)
 - Cursor
 - Vercel
 
