@@ -6,7 +6,6 @@
 ## Setup 
 By adding a `.env` with the following values, it should work but I'm not going to spend a ton of time wiriting up a how to (unless requested)
 ```
-.env
 GITHUB_ID = personal auth ID you get from https://github.com/settings/tokens
 GITHUB_SECRET = personal auth token you get from ^^^^^
 NEXTAUTH_URL = http://localhost:3000
