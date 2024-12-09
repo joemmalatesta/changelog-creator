@@ -217,8 +217,8 @@ export default function ChangelogViewer({
 								<div className="block dark:hidden">
 									{svgIconsLight.link}
 								</div>
-								<input type="text" name="link" placeholder="Link" className="w-96 p-1 rounded-md dark:bg-neutral-700 dark:text-white dark:border-neutral-700" />
-								<button type="submit" className="bg-emerald-300/30 hover:bg-emerald-300/50 px-3 text-white p-1 rounded-md">Add Link</button>
+								<input type="text" name="link" placeholder="Link" className="w-96 p-1 rounded-md dark:bg-neutral-700 dark:text-white dark:border-neutral-700 bg-dark/10" />
+								<button type="submit" className="dark:bg-emerald-300/50 bg-emerald-600/70 hover:bg-emerald-600/80 dark:hover:bg-emerald-300/70 px-3 text-white p-1 rounded-md">Add Link</button>
 							</div>
 						</form>
 					</div>
