@@ -1,10 +1,9 @@
-import { createChangelogVersion, editChangelogVersion } from "@/db/actions/versions";
+import { createChangelogVersion, editChangelogVersionTitle } from "@/db/actions/versions";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
 	try {
 		const { title, repoName, startDate, endDate } = await req.json();
-		console.log(startDate, endDate);
 		const changelogVersionId = await createChangelogVersion(title, repoName, startDate, endDate);
 		return NextResponse.json({ changelogVersionId });
 	} catch (error) {
@@ -29,9 +28,13 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
 	try {
 		const { id, versionTitle } = await req.json();
-		await editChangelogVersion(id, versionTitle);
+		await editChangelogVersionTitle(id, versionTitle);
 		return NextResponse.json({ success: true });
-	} catch (error: any) {
-		return NextResponse.json({ error: error.message }, { status: 500 });
+	} catch (error) {
+		if (error instanceof Error) {
+			return NextResponse.json({ error: error.message }, { status: 500 });
+		} else {
+			return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
+		}
 	}
 }

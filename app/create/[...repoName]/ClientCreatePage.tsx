@@ -38,7 +38,9 @@ export default function ClientCreatePage({ repoName, commits }: ClientCreatePage
 					</button>
 					<h2 className="text-2xl font-bold">{repoName}</h2>
 				</form>
-				<SelectRange commits={commits} formAction={handleCreateChangelog} />
+				{commits.length > 0 && (
+					<SelectRange commits={commits} formAction={handleCreateChangelog} />
+				)}
 			</div>
 			<div className="w-3/5">
 				{commitRange.length > 0 && changelogTitle ? (

@@ -121,6 +121,16 @@ export default function ChangelogViewer({
 					return acc;
 				}, []);
 
+				// Update version title in database
+				await fetch("/api/changelogVersion", {
+					method: "PUT", 
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						id: changelogVersionId,
+						versionTitle: parsedContent.title
+					})
+				});
+
 				setEntries(newEntries);
 				await saveChangelogEntry(newEntries, changelogVersionId);
 			} catch (error) {
@@ -147,25 +157,34 @@ export default function ChangelogViewer({
 		processChangelog();
 	}, [commits, repoName, changelogVersionId]);
 
-	function addLink(formData: FormData) {
-		console.log(formData);
+	async function addLink(formData: FormData) {
+		const link = formData.get("link");
+		await fetch("/api/changelogEntry", {
+			method: "PUT",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				id: changelogVersionId,
+				content: link,
+				type: "link",
+			}),
+		});
 	}
 
 	return (
 		<div className="w-full max-w-full">
 			{isLoading ? (
 				<div className="w-full h-96 relative">
-					<div className="absolute inset-1/2 translate-x-10 translate-y-10 w-24 h-24 bg-emerald-300 rounded-full blur-xl opacity-70"></div>
-					<div className="absolute inset-1/2 -translate-x-10 translate-y-10 w-24 h-24 bg-emerald-400 rounded-full blur-xl opacity-70"></div>
-					<div className="absolute inset-1/2 -translate-x-10 -translate-y-10 w-24 h-24 bg-emerald-500 rounded-full blur-xl opacity-70 animate-pulse"></div>
+					<div className="absolute inset-1/2 translate-x-20 translate-y-20 w-32 h-32 bg-emerald-300 rounded-full blur-xl opacity-70"></div>
+					<div className="absolute inset-1/2 -translate-x-20 translate-y-20 w-32 h-32 bg-emerald-400 rounded-full blur-xl opacity-70"></div>
+					<div className="absolute inset-1/2 -translate-x-20 -translate-y-20 w-32 h-32 bg-emerald-500 rounded-full blur-xl opacity-70 animate-pulse"></div>
 					<div className="flex items-center justify-center h-full">
 						<p className="text-xl font-bold">Generating changelog...</p>
 					</div>
 				</div>
 			) : (
 				<>
-					<h1 className="text-4xl font-bold mb-4 w-full">{changelogTitleUpdated}</h1>
 					<div className="w-full max-w-full prose dark:prose-invert">
+					<h2 className="font-bold mb-4 w-full">{changelogTitleUpdated}</h2>
 						{entries.map((entry) =>
 							entry.type === "title" || entry.content === "" ? null : (
 								<div key={entry.id} className="w-full max-w-full">
@@ -181,16 +200,17 @@ export default function ChangelogViewer({
 								</div>
 							)
 						)}
+						{}
 						<form action={addLink}>
-							<div className="flex gap-2">
+							<div className="flex gap-1 items-center">
 								<div className="hidden dark:block">
 									{svgIconsDark.link}
 								</div>
 								<div className="block dark:hidden">
 									{svgIconsLight.link}
 								</div>
-								<input type="text" name="link" placeholder="Link" />
-								<button type="submit">Add Link</button>
+								<input type="text" name="link" placeholder="Link" className="w-96 p-1 rounded-md dark:bg-neutral-700 dark:text-white dark:border-neutral-700" />
+								<button type="submit" className="bg-emerald-300/30 hover:bg-emerald-300/50 px-3 text-white p-1 rounded-md">Add Link</button>
 							</div>
 						</form>
 					</div>

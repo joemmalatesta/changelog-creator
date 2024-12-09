@@ -25,6 +25,7 @@ export async function getChangelogByPublicSlug(publicSlug: string) {
     return await db.select({
         id: changelogVersions.id,
         title: changelogVersions.title,
+        createdAt: changelogVersions.createdAt,
     })
     .from(changelogs)
     .innerJoin(changelogVersions, eq(changelogs.id, changelogVersions.changelogId))

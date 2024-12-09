@@ -5,7 +5,6 @@ import { ChangelogEntry } from "@/types/Changelog";
 export async function POST(req: Request) {
 	try {
 		const { entries	, changelogVersionId } = await req.json();
-		console.log(entries, changelogVersionId);
 		entries.forEach((entry: ChangelogEntry) => saveChangelogEntry(entry.type, entry.content, changelogVersionId, entry.id));
 		return NextResponse.json({ success: true });
 	} catch (error) {
