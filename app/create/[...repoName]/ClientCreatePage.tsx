@@ -46,9 +46,8 @@ export default function ClientCreatePage({ repoName, commits }: ClientCreatePage
 				) : (
 					<div className="flex flex-col items-center justify-center h-full gap-8">
 						<div className="relative">
-							<div className="absolute -inset-1 rounded-lg dark:bg-emerald-400/10 bg-emerald-400/30 blur-xl animate-pulse"></div>
 							<div className="relative rounded-lg p-8">
-								<p className="text-center text-2xl font-bold opacity-70">
+								<p className="text-center text-2xl font-bold opacity-50">
 									Select {repoName.split("/")[1]} commit range...
 								</p>
 							</div>

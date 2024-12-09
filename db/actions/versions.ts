@@ -29,11 +29,11 @@ export async function getChangelogVersions(changelogId: string) {
     return await db.select().from(changelogVersions).where(eq(changelogVersions.changelogId, changelogId));
 }
 
-export async function editChangelogVersion(id: string, changelogVersion: string) {
+export async function editChangelogVersion(id: string, title: string) {
     await db
         .update(changelogVersions)
         .set({
-            title: changelogVersion,
+            title: title,
         })
         .where(eq(changelogVersions.id, id));
 } 
