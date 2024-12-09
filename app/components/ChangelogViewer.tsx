@@ -3,7 +3,8 @@
 import { ChangelogEntry } from "@/types/Changelog";
 import { Commit } from "@/types/repo";
 import { useEffect, useState, useRef } from "react";
-import {Link, LinkBreak, ChartLineUp, Bug, ArrowsDownUp } from "@phosphor-icons/react"
+import {Link as LinkIcon, LinkBreak, ChartLineUp, Bug, ArrowsDownUp } from "@phosphor-icons/react"
+import Link from "next/link";
 
 const readableTypes = {
 	title: "Title",
@@ -20,7 +21,7 @@ const svgIconsDark = {
 	bugfix: <Bug color="#f2f2f2" size={32} />,
 	improvement: <ChartLineUp color="#f2f2f2" size={32} />,
 	breakingChange: <LinkBreak color="#f2f2f2" size={32} />,
-	link: <Link color="#f2f2f2" size={32} />
+	link: <LinkIcon color="#f2f2f2" size={32} />
 };
 const svgIconsLight = {
 	title: <></>,
@@ -28,7 +29,7 @@ const svgIconsLight = {
 	bugfix: <Bug color="#1a1a1a" size={32} />,
 	improvement: <ChartLineUp color="#1a1a1a" size={32} />,
 	breakingChange: <LinkBreak color="#1a1a1a" size={32} />,
-	link: <Link color="#1a1a1a" size={32} />
+	link: <LinkIcon color="#1a1a1a" size={32} />
 };
 
 export default function ChangelogViewer({
@@ -157,8 +158,11 @@ export default function ChangelogViewer({
 		processChangelog();
 	}, [commits, repoName, changelogVersionId]);
 
+
+	const [links, setLinks] = useState<string[]>([]);
 	async function addLink(formData: FormData) {
 		const link = formData.get("link");
+		setLinks([...links, link as string]);
 		await fetch("/api/changelogEntry", {
 			method: "PUT",
 			headers: { "Content-Type": "application/json" },
@@ -173,12 +177,11 @@ export default function ChangelogViewer({
 	return (
 		<div className="w-full max-w-full">
 			{isLoading ? (
-				<div className="w-full h-96 relative">
-					<div className="absolute inset-1/2 translate-x-20 translate-y-20 w-32 h-32 bg-emerald-300 rounded-full blur-xl opacity-70"></div>
-					<div className="absolute inset-1/2 -translate-x-20 translate-y-20 w-32 h-32 bg-emerald-400 rounded-full blur-xl opacity-70"></div>
-					<div className="absolute inset-1/2 -translate-x-20 -translate-y-20 w-32 h-32 bg-emerald-500 rounded-full blur-xl opacity-70 animate-pulse"></div>
-					<div className="flex items-center justify-center h-full">
-						<p className="text-xl font-bold">Generating changelog...</p>
+				<div className="w-full h-96 flex flex-col items-center justify-center gap-4">
+					<div className="w-8 h-8 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+					<div className="flex flex-col items-center gap-2">
+						<p className="text-xl font-bold">Generating changelog</p>
+						<p className="text-sm text-gray-500">This may take a few moments</p>
 					</div>
 				</div>
 			) : (
@@ -200,7 +203,12 @@ export default function ChangelogViewer({
 								</div>
 							)
 						)}
-						{}
+						{links.map((link, index) => (
+							<div key={index} className="w-full max-w-full flex items-center gap-2">
+								<LinkIcon size={32} />
+								<Link href={link} target="_blank" className="hover:underline">{link}</Link>
+							</div>
+						))}
 						<form action={addLink}>
 							<div className="flex gap-1 items-center">
 								<div className="hidden dark:block">
